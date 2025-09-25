@@ -1,52 +1,19 @@
-# React + Vite + CRXJS
+# ent-studio
 
-This template helps you quickly start developing Chrome extensions with React, TypeScript and Vite. It includes the CRXJS Vite plugin for seamless Chrome extension development.
+## 개요
+**ent-studio**(가칭)은 한국의 블럭코딩 웹사이트 [엔트리](https://playentry.org)의 기능을 개선하는 확장 프로그램입니다.
 
-## Features
+## 설치 방법
 
-- React with TypeScript
-- TypeScript support
-- Vite build tool
-- CRXJS Vite plugin integration
-- Chrome extension manifest configuration
+(크롬 기준)
 
-## Quick Start
+1. Release에서 최신 버전의 확장 프로그램을 다운받고 압축을 해제합니다.
+2. [크롬 확장 프로그램 설정](chrome://extensions)으로 이동합니다.
+3. 개발자 모드를 활성화합니다.
+4. `압축 해제된 프로그램 로드`를 클릭합니다.
+5. 압축 해제된 확장 프로그램 폴더를 선택합니다.
 
-1. Install dependencies:
+## 빌드
 
-```bash
-npm install
-```
-
-2. Start development server:
-
-```bash
-npm run dev
-```
-
-3. Open Chrome and navigate to `chrome://extensions/`, enable "Developer mode", and load the unpacked extension from the `dist` directory.
-
-4. Build for production:
-
-```bash
-npm run build
-```
-
-## Project Structure
-
-- `src/popup/` - Extension popup UI
-- `src/content/` - Content scripts
-- `manifest.config.ts` - Chrome extension manifest configuration
-
-## Documentation
-
-- [React Documentation](https://reactjs.org/)
-- [Vite Documentation](https://vitejs.dev/)
-- [CRXJS Documentation](https://crxjs.dev/vite-plugin)
-
-## Chrome Extension Development Notes
-
-- Use `manifest.config.ts` to configure your extension
-- The CRXJS plugin automatically handles manifest generation
-- Content scripts should be placed in `src/content/`
-- Popup UI should be placed in `src/popup/`
+- `npm run dev` - 개발자 모드로 빌드
+- `npm run build` - 프로덕션 모드로 빌드
