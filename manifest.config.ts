@@ -18,7 +18,7 @@ export default defineManifest({
     'contentSettings',
   ],
   content_scripts: [{
-    js: ['src/content/main.tsx'],
-    matches: ['https://*/*'],
+    js: ['src/content/loader.ts'],
+    matches: ['https://*.playentry.org/ws/*'],
   }],
 })
