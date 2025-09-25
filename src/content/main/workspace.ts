@@ -1,66 +1,30 @@
-interface EntryJSInfo {
-  script: HTMLScriptElement
-  version: string | null
-}
+function findEntryJS() {
+  for (const script of document.scripts) {
+    if (!script.src)
+      continue
 
-async function waitForEntryJS(timeout?: number) {
-  const version = await new Promise<EntryJSInfo>((resolve, reject) => {
-    let timeoutID: number | undefined
+    try {
+      const url = new URL(script.src)
+      const filename = url.pathname.split('/').pop() ?? ''
 
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type !== 'childList')
-          continue
+      if (!(['entry.min.js', 'entry.js'].includes(filename)))
+        continue
 
-        for (const node of mutation.addedNodes) {
-          if (node.nodeType !== Node.ELEMENT_NODE)
-            continue
-
-          const elem = node as Element
-
-          if (elem.tagName !== 'script')
-            continue
-
-          const script = elem as HTMLScriptElement
-
-          if (!script.src)
-            continue
-
-          try {
-            const url = new URL(script.src)
-            const filename = url.pathname.split('/').pop() ?? ''
-
-            if (!(['entry.min.js', 'entry.js'].includes(filename)))
-              continue
-
-            resolve({
-              script: script,
-              version: url.searchParams.get('v')
-            })
-
-          } catch (e) {
-            continue
-          }
-        }
+      return {
+        script,
+        version: url.searchParams.get('v')
       }
-    })
 
-    observer.observe(
-      document.body,
-      { attributes: false, childList: true, subtree: false }
-    )
 
-    if (timeout != null)
-      timeoutID = setTimeout(() => {
-        reject(new Error("entry.js를 찾을 수 없었습니다"))
-        observer.disconnect()
-      }, timeout)
-  })
+    } catch (e) {
+      continue
+    }
+  }
 
-  return version
+  throw new Error("EntryJS를 찾지 못했습니다")
 }
 
-const entryInfo = await waitForEntryJS(10000)
+const entryInfo = findEntryJS()
 
 console.log(`entry.js 확인 완료 (버전 ${entryInfo.version ?? '알 수 없음'})`)
 
