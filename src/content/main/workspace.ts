@@ -1,5 +1,10 @@
+interface EntryJSInfo {
+  script: HTMLScriptElement
+  version: string | null
+}
+
 async function waitForEntryJS(timeout?: number) {
-  const version = await new Promise<string | null>((resolve, reject) => {
+  const version = await new Promise<EntryJSInfo>((resolve, reject) => {
     let timeoutID: number | undefined
 
     const observer = new MutationObserver((mutations) => {
@@ -16,17 +21,22 @@ async function waitForEntryJS(timeout?: number) {
           if (elem.tagName !== 'script')
             continue
 
-          if (!(elem as HTMLScriptElement).src)
+          const script = elem as HTMLScriptElement
+
+          if (!script.src)
             continue
 
           try {
-            const url = new URL((elem as HTMLScriptElement).src)
+            const url = new URL(script.src)
             const filename = url.pathname.split('/').pop() ?? ''
 
             if (!(['entry.min.js', 'entry.js'].includes(filename)))
               continue
 
-            resolve(url.searchParams.get('v'))
+            resolve({
+              script: script,
+              version: url.searchParams.get('v')
+            })
 
           } catch (e) {
             continue
@@ -42,7 +52,7 @@ async function waitForEntryJS(timeout?: number) {
 
     if (timeout != null)
       timeoutID = setTimeout(() => {
-        reject(new Error("timeout: entry.js를 찾을 수 없었습니다"))
+        reject(new Error("entry.js를 찾을 수 없었습니다"))
         observer.disconnect()
       }, timeout)
   })
@@ -50,6 +60,11 @@ async function waitForEntryJS(timeout?: number) {
   return version
 }
 
-waitForEntryJS(10000)
+const entryInfo = await waitForEntryJS(10000)
 
-console.log('entry.js 확인 완료')
+console.log(`entry.js 확인 완료 (버전 ${entryInfo.version ?? '알 수 없음'})`)
+
+entryInfo.script.addEventListener('load', () => {
+  // WIP
+  console.log('entry 객체', window.Entry)
+})
