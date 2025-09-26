@@ -1,7 +1,11 @@
 import { EntryBlock } from "types/main/entryjs"
 
 export interface ExtendedEntryBlock extends EntryBlock {
+}
 
+export interface BlockExtension {
+  blockAdd?: Record<string, Optional<EntryBlock>>
+  blockChange?: Record<string, Partial<Optional<EntryBlock>>>
 }
 
 export class BlockExtensionManager {
@@ -13,7 +17,7 @@ export class BlockExtensionManager {
   }
 
   private constructor() {
-    
+
   }
 
   static get instance() {
@@ -23,7 +27,6 @@ export class BlockExtensionManager {
   }
 
   addBlock(block: EntryBlock, category: any) {
-    
+
   }
 }
-
