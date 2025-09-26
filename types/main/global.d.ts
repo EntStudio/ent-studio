@@ -1,11 +1,13 @@
-export { IEntry }
-
-declare interface IEntry {
-  // TODO: 인터페이스 내용물 추가
-}
+import { IEntry } from './entryjs/entry';
 
 declare global {
-  var Entry: IEntry | undefined
-  var Lang: any
+    interface Window {
+        entrylms?: any;
+        Lang?: any;
+        popupHelper?: any;
+        EntryStatic?: any;
+        ImageCapture?: any;
+        sendSync?: any;
+        Entry?: IEntry;
+    }
 }
-

@@ -1,4 +1,4 @@
-import { sleep } from "src/utils/utils.ts"
+import { sleep } from "@/utils/utils.ts"
 
 async function findEntryJS(attempts: number = 3, timeout: number = 3) {
   for (let i = attempts; i > 0; i--) {

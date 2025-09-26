@@ -1,28 +1,11 @@
 {
+  "extends": ["./tsconfig.base.json"],
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.main.tsbuildinfo",
-    "target": "ES2020",
-    "jsx": "react-jsx",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "moduleDetection": "force",
-    "useDefineForClassFields": true,
-    "baseUrl": ".",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "types": [],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/content/main/*", "src/*"]
     },
-    "types": ["vite/client", "chrome"],
-    "allowImportingTsExtensions": true,
-    "strict": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
-    "noUncheckedSideEffectImports": true
   },
-  "include": ["src/content/main/*", "types/main/global.d.ts"]
+  "include": ["src/content/main/**/*", "types/main/**/*"]
 
 }
