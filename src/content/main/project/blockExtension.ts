@@ -12,6 +12,10 @@ export class BlockExtensionManager {
       this._instance = new BlockExtensionManager()
   }
 
+  private constructor() {
+    
+  }
+
   static get instance() {
     if (!this._instance)
       throw new ReferenceError("BlockExtensionManager가 초기화되지 않았습니다.")
@@ -19,7 +23,7 @@ export class BlockExtensionManager {
   }
 
   addBlock(block: EntryBlock, category: any) {
-
+    
   }
 }
 
