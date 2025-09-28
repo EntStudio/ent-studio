@@ -1,4 +1,5 @@
 import { EntryBlock } from "types/main/entryjs"
+import { Optional } from "@/utils/types.ts"
 
 export interface ExtendedEntryBlock extends EntryBlock {
 }
