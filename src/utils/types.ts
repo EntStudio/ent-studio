@@ -1,1 +1,1 @@
-export type Optional<T> = T & {[key: string]: any}
+export type Optional<T> = T | undefined | null

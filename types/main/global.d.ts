@@ -1,13 +1,13 @@
 import { IEntry } from './entryjs/entry';
 
 declare global {
-    interface Window {
-        entrylms?: any;
-        Lang?: any;
-        popupHelper?: any;
-        EntryStatic?: any;
-        ImageCapture?: any;
-        sendSync?: any;
-        Entry?: IEntry;
+    declare module globalThis {
+        var entrylms: any;
+        var Lang: any;
+        var popupHelper: any;
+        var EntryStatic: any;
+        var ImageCapture: any;
+        var sendSync: any;
+        var Entry: IEntry;
     }
 }
