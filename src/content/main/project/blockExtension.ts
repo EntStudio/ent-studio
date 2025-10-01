@@ -91,12 +91,12 @@ export class BlockExtensionManager {
   }
 }
 
-type BlockSchemaGeneratorProxy = {[key: string]: (...args: any[]) => BlockSchemaGeneratorToken}
+type BlockSchemaProxy = { [key: string]: (...args: any[]) => BlockSchemaToken }
 
-class BlockSchemaGeneratorToken {
+class BlockSchemaToken {
   type: string
   params: any[]
-  statements: BlockSchemaGeneratorToken[][]
+  statements: BlockSchemaToken[][]
 
   constructor(type: string, params: any[]) {
     this.type = type
@@ -104,14 +104,14 @@ class BlockSchemaGeneratorToken {
     this.statements = []
   }
 
-  statement(callback: (block: BlockSchemaGeneratorProxy) => void) {
+  statement(callback: (block: BlockSchemaProxy) => void) {
     this.statements.push(new ThreadSchemaGenerator(callback).tokens)
   }
 
   export(): BlockSchema {
     const looseSchema: LooseBlockSchema = {
       type: this.type,
-      params: this.params.map(x => x instanceof BlockSchemaGeneratorToken ? x.export() : x),
+      params: this.params.map(x => x instanceof BlockSchemaToken ? x.export() : x),
       statements: this.statements.map(x => x.map(y => y.export()))
     }
 
@@ -119,10 +119,45 @@ class BlockSchemaGeneratorToken {
   }
 }
 
+class OperationHelper {
+  proxy: BlockSchemaProxy
+  constructor(proxy: BlockSchemaProxy) {
+    this.proxy = proxy
+  }
+
+  add(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.calc_basic(a, "PLUS", b)
+  }
+
+  sub(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.calc_basic(a, "MINUS", b)
+  }
+
+  mul(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.calc_basic(a, "MULTI", b)
+  }
+
+  div(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.calc_basic(a, "DIVIDE", b)
+  }
+
+  round(x: BlockSchemaToken) {
+    return this.proxy.calc_operation(null, x, null, "round")
+  }
+
+  square(x: BlockSchemaToken) {
+    return this.proxy.calc_operation(null, x, null, "square")
+  }
+
+  ln(x: BlockSchemaToken) {
+    return this.proxy.calc_operation(null, x, null, "ln")
+  }
+}
+
 abstract class BlockSchemaGeneratorBase {
-  protected static blockHandler(this: BlockSchemaGeneratorBase, data: BlockSchemaGeneratorToken[], type: string, ...params: any[]) {
+  protected static blockHandler(this: BlockSchemaGeneratorBase, data: BlockSchemaToken[], type: string, ...params: any[]) {
     params.forEach(param => {
-      if (param instanceof BlockSchemaGeneratorToken) {
+      if (param instanceof BlockSchemaToken) {
         const idx = data.indexOf(param)
 
         if (idx !== -1)
@@ -130,14 +165,14 @@ abstract class BlockSchemaGeneratorBase {
       }
     })
 
-    const token = new BlockSchemaGeneratorToken(type, params)
+    const token = new BlockSchemaToken(type, params)
 
     data.push(token)
 
     return token
   }
 
-  protected makeProxyHandler(data: BlockSchemaGeneratorToken[]) {
+  protected makeProxyHandler(data: BlockSchemaToken[]) {
     const handler: ProxyHandler<Object> = {}
     handler.get = (target, prop, receiver) => {
       if (typeof prop === 'symbol')
@@ -154,14 +189,16 @@ abstract class BlockSchemaGeneratorBase {
 }
 
 export class BlockSchemaGenerator extends BlockSchemaGeneratorBase {
-  token: BlockSchemaGeneratorToken
-  constructor(callback: (block: BlockSchemaGeneratorProxy) => BlockSchemaGeneratorToken) {
+  token: BlockSchemaToken
+  constructor(callback: (block: BlockSchemaProxy, operators: OperationHelper) => BlockSchemaToken) {
     super()
 
-    const _data: BlockSchemaGeneratorToken[] = []
+    const _data: BlockSchemaToken[] = []
 
-    const { proxy, revoke } = Proxy.revocable({}, this.makeProxyHandler(_data))
-    this.token = callback(proxy as BlockSchemaGeneratorProxy)
+    const { proxy, revoke } = Proxy.revocable<BlockSchemaProxy>({}, this.makeProxyHandler(_data))
+    const operationHelper = new OperationHelper(proxy)
+
+    this.token = callback(proxy, operationHelper)
 
     revoke()
   }
@@ -172,14 +209,16 @@ export class BlockSchemaGenerator extends BlockSchemaGeneratorBase {
 }
 
 export class ThreadSchemaGenerator extends BlockSchemaGeneratorBase {
-  tokens: BlockSchemaGeneratorToken[]
-  constructor(callback: (block: BlockSchemaGeneratorProxy) => void) {
+  tokens: BlockSchemaToken[]
+  constructor(callback: (block: BlockSchemaProxy, operators: OperationHelper) => void) {
     super()
 
     this.tokens = []
 
-    const { proxy, revoke } = Proxy.revocable({}, this.makeProxyHandler(this.tokens))
-    callback(proxy as BlockSchemaGeneratorProxy)
+    const { proxy, revoke } = Proxy.revocable<BlockSchemaProxy>({}, this.makeProxyHandler(this.tokens))
+    const operationHelper = new OperationHelper(proxy)
+
+    callback(proxy, operationHelper)
 
     revoke()
   }
@@ -189,24 +228,96 @@ export class ThreadSchemaGenerator extends BlockSchemaGeneratorBase {
   }
 }
 
+// 타입 추론 죽어도 안됨
+interface FuncPlaceholderProxy {
+  variable: Record<string, BlockSchemaToken>
+  param: Record<string, BlockSchemaToken>
+}
+
 export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
-  tokens: BlockSchemaGeneratorToken[]
-  resultToken: BlockSchemaGeneratorToken
-  constructor(callback: (block: BlockSchemaGeneratorProxy) => BlockSchemaGeneratorToken) {
+  tokens: BlockSchemaToken[]
+  resultToken?: BlockSchemaToken
+
+  variables?: readonly string[]
+  parameters?: readonly string[]
+
+  constructor(
+    callback: (block: BlockSchemaProxy, operators: OperationHelper, func: FuncPlaceholderProxy)
+      => BlockSchemaToken | void,
+    variables?: string[],
+    parameters?: string[]
+  ) {
     super()
+
+    this.variables = variables ?? []
+    this.parameters = parameters ?? []
 
     this.tokens = []
 
-    const { proxy, revoke } = Proxy.revocable({}, this.makeProxyHandler(this.tokens))
-    this.resultToken = callback(proxy as BlockSchemaGeneratorProxy)
+    const { proxy: blockProxy, revoke: blockProxyRevoke } = Proxy.revocable<BlockSchemaProxy>({}, this.makeProxyHandler(this.tokens))
+    const operationHelper = new OperationHelper(blockProxy as BlockSchemaProxy)
 
-    this.tokens.splice(this.tokens.indexOf(this.resultToken), 1)
+    const { proxy: variableProxy, revoke: variableRevoke } = Proxy.revocable({}, {
+      get: (target, prop, receiver) => {
+        if (typeof prop === 'symbol')
+          throw new TypeError("string만 인자로 받을 수 있습니다")
 
-    revoke()
+        if (variables?.includes(prop)) {
+          return new BlockSchemaToken("get_func_variable", [prop]) 
+        }
+
+        throw new Error(`변수 ${prop}이 존재하지 않습니다`)
+      },
+
+      set: (target, prop, receiver) => {
+        if (typeof prop === 'symbol')
+          throw new TypeError("string만 인자로 받을 수 있습니다")
+
+        blockProxy.set_func_variable(prop, receiver, null)
+
+        return false
+      }
+    })
+
+    const { proxy: paramProxy, revoke: paramRevoke } = Proxy.revocable({}, {
+      get: (target, prop, receiver) => {
+        if (typeof prop === 'symbol')
+          throw new TypeError("string만 인자로 받을 수 있습니다")
+
+        if (parameters?.includes(prop)) {
+          return new BlockSchemaToken("stringParam", [prop]) 
+        }
+
+        throw new Error(`파라미터 ${prop}이 존재하지 않습니다`)
+      },
+
+      set: () => {
+        throw new Error("파라미터의 값을 설정할 수 없습니다")
+      }
+    })
+
+    const funcProxy: FuncPlaceholderProxy = {
+      variable: variableProxy,
+      param: paramProxy
+    }
+
+    const val = callback(blockProxy, operationHelper, funcProxy)
+
+    if (val) {
+      this.resultToken = val
+      const idx = this.tokens.indexOf(val)
+      if (idx >= 0)
+        this.tokens.splice(idx, 1)
+    }
+
+    blockProxyRevoke()
+    variableRevoke()
+    paramRevoke()
   }
 
   export(): EntryFunctionSchema[] {
+    throw new Error("구현되지 않음")
     // TODO: WIP
-    return this.tokens.map(x => x.export())
+    //return this.tokens.map(x => x.export())
   }
 }
