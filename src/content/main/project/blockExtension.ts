@@ -106,6 +106,7 @@ class BlockSchemaToken {
 
   statement(callback: (block: BlockSchemaProxy) => void) {
     this.statements.push(new ThreadSchemaGenerator(callback).tokens)
+    return this
   }
 
   export(): BlockSchema {
