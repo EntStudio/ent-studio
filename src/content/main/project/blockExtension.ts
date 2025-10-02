@@ -104,7 +104,7 @@ class BlockSchemaToken {
     this.statements = []
   }
 
-  statement(callback: (block: BlockSchemaProxy) => void) {
+  statement(callback: (block: BlockSchemaProxy, operators: OperationHelper) => void) {
     this.statements.push(new ThreadSchemaGenerator(callback).tokens)
     return this
   }
