@@ -153,6 +153,30 @@ class OperationHelper {
   ln(x: BlockSchemaToken) {
     return this.proxy.calc_operation(null, x, null, "ln")
   }
+
+  gt(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.boolean_basic_operator(a, "GREATER", b)
+  }
+
+  ge(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.boolean_basic_operator(a, "GREATER_OR_EQUAL", b)
+  }
+
+  eq(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.boolean_basic_operator(a, "EQUAL", b)
+  }
+
+  ne(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.boolean_basic_operator(a, "NOT_EQUAL", b)
+  }
+
+  le(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.boolean_basic_operator(a, "LESS", b)
+  }
+
+  lt(a: BlockSchemaToken, b: BlockSchemaToken) {
+    return this.proxy.boolean_basic_operator(a, "LESS_OR_EQUAL", b)
+  }
 }
 
 abstract class BlockSchemaGeneratorBase {
