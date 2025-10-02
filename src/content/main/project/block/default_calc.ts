@@ -18,6 +18,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   },
   ['n', 'r', 'result'],
   ['x']),
+
   sinh: new FunctionSchemaGenerator((bl, op, fn) => {
     fn.variable['n'] = op.div(fn.param['x'], op.round(bl.number(2.302585092994045684)))
     fn.variable['r'] = op.sub(fn.param['x'], op.mul(fn.variable['n'], bl.number(2.302585092994045684)))
@@ -33,6 +34,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   },
   ['n', 'r', 'result'],
   ['x']),
+
   cosh: new FunctionSchemaGenerator((bl, op, fn) => {
     fn.variable['n'] = op.div(fn.param['x'], op.round(bl.number(2.302585092994045684)))
     fn.variable['r'] = op.sub(fn.param['x'], op.mul(fn.variable['n'], bl.number(2.302585092994045684)))
@@ -48,6 +50,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   },
   ['n', 'r', 'result'],
   ['x']),
+
   tanh: new FunctionSchemaGenerator((bl, op, fn) => {
     fn.variable['n'] = op.div(fn.param['x'], op.round(bl.number(2.302585092994045684)))
     fn.variable['r'] = op.sub(fn.param['x'], op.mul(fn.variable['n'], bl.number(2.302585092994045684)))
@@ -63,11 +66,24 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   },
   ['n', 'r', 'result'],
   ['x']),
+
   sign: new FunctionSchemaGenerator((bl, op, fn) => {
-    // 뒤를 부탁한다
+    bl.if_else(op.gt(fn.param['x'], bl.number(0)))
+    .statement((bl, op) => {
+      fn.variable['result'] = bl.number(1)
+    })
+    .statement((bl, op) => {
+      bl.if_else(op.lt(fn.param['x'], bl.number(0)))
+      .statement((bl, op) => {
+        fn.variable['result'] = bl.number(-1)
+      })
+      .statement((bl, op) => {
+        fn.variable['result'] = bl.number(0)
+      })
+    })
 
     return fn.variable['result']
   },
-  ['n', 'r', 'result'],
+  ['result'],
   ['x'])
 }
