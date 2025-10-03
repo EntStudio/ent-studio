@@ -345,8 +345,10 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
   }
 
   export(): EntryFunctionSchema[] {
-    throw new Error("구현되지 않음")
-    // TODO: WIP
-    //return this.tokens.map(x => x.export())
+    return [{
+      variables: this.variables ? [...this.variables] : undefined,
+      content: this.tokens.map(token => token.export()),
+      result: this.resultToken ? this.resultToken.export() : undefined,
+    }]
   }
 }
