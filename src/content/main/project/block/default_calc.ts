@@ -68,7 +68,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   ['x']),
 
   arsinh: new FunctionSchemaGenerator((bl, op, fn) => {
-    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.sqrt(op.add(op.square(fn.param['x']), bl.number(1)))))
+    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.root(op.add(op.square(fn.param['x']), bl.number(1)))))
 
     return fn.variable['result']
   },
@@ -76,7 +76,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   ['x']),
 
   arcosh: new FunctionSchemaGenerator((bl, op, fn) => {
-    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.sqrt(op.sub(op.square(fn.param['x']), bl.number(1)))))
+    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.root(op.sub(op.square(fn.param['x']), bl.number(1)))))
 
     return fn.variable['result']
   },
@@ -84,7 +84,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   ['x']),
   
   artanh: new FunctionSchemaGenerator((bl, op, fn) => {
-    fn.variable['result'] = op.ln(op.div(op.sqrt(op.sub(bl.number(1), op.square(fn.param['x']))), op.sub(bl.number(1), fn.param['x'])))
+    fn.variable['result'] = op.ln(op.div(op.root(op.sub(bl.number(1), op.square(fn.param['x']))), op.sub(bl.number(1), fn.param['x'])))
 
     return fn.variable['result']
   },

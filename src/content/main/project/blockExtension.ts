@@ -146,8 +146,8 @@ class OperationHelper {
     return this.proxy.calc_operation(null, x, null, "round")
   }
 
-  sqrt(x: BlockSchemaToken) {
-    return this.proxy.calc_operation(null, x, null, "sqrt")
+  root(x: BlockSchemaToken) {
+    return this.proxy.calc_operation(null, x, null, "root")
   }
 
   square(x: BlockSchemaToken) {
