@@ -10,4 +10,9 @@ declare global {
         var sendSync: any;
         var Entry: IEntry;
     }
+    interface Window {
+        Entry: any;
+    }
 }
+
+export {};

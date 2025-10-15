@@ -1,4 +1,5 @@
 import { sleep } from "@/utils/utils"
+import { operationEntryFunctions } from "@/content/main/project/block/block_calc"
 
 async function findEntryJS(attempts: number = 3, timeout: number = 3) {
   for (let i = attempts; i > 0; i--) {
@@ -45,7 +46,7 @@ else {
 }
 
 function onEntryLoad() {
-  // TODO: 여기에 이벤트 추가
+  console.log(operationEntryFunctions.exp.export());
 }
 
 

@@ -1,6 +1,12 @@
 import { generateHash } from "@/utils/utils"
-import { EntryBlock } from "types/main/entryjs"
-import { BlockDeletable, BlockSchema, LooseBlockSchema } from "types/main/entryjs/schema"
+import type { EntryBlock } from "@/types/main/entryjs"
+import type { BlockSchema, LooseBlockSchema } from "@/types/main/entryjs/schema"
+
+const BlockDeletable = {
+  TRUE: 1,
+  FALSE: 2,
+  FALSE_LIGHTEN: 3
+}
 
 export interface ExtendedEntryBlock extends EntryBlock {
   onLoad: (schema: BlockSchema, thread: any, fieldParams?: string[]) => EntryBlock

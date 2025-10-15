@@ -6,6 +6,6 @@
       "@/*": ["src/content/main/*", "src/*"]
     },
   },
-  "include": ["src/content/main/**/*", "types/main/**/*"]
+  "include": ["src/content/main/**/*", "src/types/main/**/*"]
 
 }
