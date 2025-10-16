@@ -118,6 +118,9 @@ export declare interface IEntry extends EntryOptions {
     CANVAS_MIN_WIDTH: 162;
     CANVAS_DEFAULT_WIDTH: 324;
     CANVAS_MAX_WIDTH: 640;
+
+    // 정의되지 않은 형식에 대한 예외 처리
+    [key: string]: any
 }
 
 declare type IHardwareType = 'serial' | 'bluetooth' | 'hid' | 'ble';
