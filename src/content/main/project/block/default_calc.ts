@@ -16,6 +16,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "exp",
+  "exp %1",
   ['n', 'r', 'result'],
   ['x']),
 
@@ -32,6 +34,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "sinh",
+  "sinh %1",
   ['n', 'r', 'result'],
   ['x']),
 
@@ -48,6 +52,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "cosh",
+  "cosh %1",
   ['n', 'r', 'result'],
   ['x']),
 
@@ -64,6 +70,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "tanh",
+  "tanh %1",
   ['n', 'r', 'result'],
   ['x']),
 
@@ -72,6 +80,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "arsinh",
+  "arsinh %1",
   ['result'],
   ['x']),
 
@@ -80,6 +90,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "arcosh",
+  "arcosh %1",
   ['result'],
   ['x']),
   
@@ -88,6 +100,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "artanh",
+  "artanh %1",
   ['result'],
   ['x']),
 
@@ -108,6 +122,8 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
 
     return fn.variable['result']
   },
+  "sign",
+  "sign %1",
   ['result'],
   ['x'])
 }

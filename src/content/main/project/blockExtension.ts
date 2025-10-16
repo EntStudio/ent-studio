@@ -3,6 +3,7 @@ import { EntryBlock } from "types/main/entryjs"
 import { BlockDeletable, BlockSchema, LooseBlockSchema } from "types/main/entryjs/schema"
 
 export interface ExtendedEntryBlock extends EntryBlock {
+  conversionAlias: string[]
   onLoad: (schema: BlockSchema, thread: any, fieldParams?: string[]) => EntryBlock
   onExport: (block: EntryBlock) => BlockSchema
 }
@@ -13,16 +14,13 @@ export interface BlockExtension {
 }
 
 export interface EntryFunctionSchema {
-  variables?: string[]
+  id: string
+  name: string
+  nameTemplate: string
+  variables?: { name: string, id: string }[]
+  params?: { name: string, id: string }[]
   content: BlockSchema[]
   result?: BlockSchema
-}
-
-export class ReservedLocalVariable {
-  name: string
-  constructor(name: string) {
-    this.name = name
-  }
 }
 
 export function makeBlockSchema(block: LooseBlockSchema): BlockSchema {
@@ -72,8 +70,10 @@ export class BlockExtensionManager {
       this._instance = new BlockExtensionManager()
   }
 
-  private constructor() {
+  private placeholders: Record<string, EntryFunctionSchema>
 
+  private constructor() {
+    this.placeholders = {}
   }
 
   static get instance() {
@@ -83,11 +83,14 @@ export class BlockExtensionManager {
   }
 
   addBlock(block: EntryBlock, category: any) {
-
+    throw new Error("구현되지 않음")
   }
 
-  makePlaceholderFunction(id: string, content?: BlockSchema, result?: BlockSchema) {
+  makePlaceholderFunction(schema: EntryFunctionSchema) {
+    if (this.placeholders[schema.id])
+      return
 
+    throw new Error("구현되지 않음")
   }
 }
 
@@ -105,7 +108,13 @@ class BlockSchemaToken {
   }
 
   statement(callback: (block: BlockSchemaProxy, operators: OperationHelper) => void) {
-    this.statements.push(new ThreadSchemaGenerator(callback).tokens)
+    const thread = new ThreadSchemaGenerator(callback)
+    thread.evaluate()
+
+    if (!thread.tokens)
+      throw new Error("토큰이 생성되지 않았습니다")
+
+    this.statements.push(thread.tokens)
     return this
   }
 
@@ -213,46 +222,63 @@ abstract class BlockSchemaGeneratorBase {
     return handler
   }
 
+  abstract evaluate(): void
+
   // 구현은 필수, 타입은 자유
   abstract export(...arg: any[]): unknown
 }
 
 export class BlockSchemaGenerator extends BlockSchemaGeneratorBase {
-  token: BlockSchemaToken
+  token?: BlockSchemaToken
+  callback: (block: BlockSchemaProxy, operators: OperationHelper) => BlockSchemaToken
   constructor(callback: (block: BlockSchemaProxy, operators: OperationHelper) => BlockSchemaToken) {
     super()
 
+    this.callback = callback
+  }
+
+  evaluate() {
     const _data: BlockSchemaToken[] = []
 
     const { proxy, revoke } = Proxy.revocable<BlockSchemaProxy>({}, this.makeProxyHandler(_data))
     const operationHelper = new OperationHelper(proxy)
 
-    this.token = callback(proxy, operationHelper)
+    this.token = this.callback(proxy, operationHelper)
 
     revoke()
   }
 
   export(): BlockSchema {
+    if (!this.token)
+      throw new Error("평가되지 않은 블럭을 export할 수 없습니다")
     return this.token.export()
   }
 }
 
 export class ThreadSchemaGenerator extends BlockSchemaGeneratorBase {
-  tokens: BlockSchemaToken[]
+  tokens?: BlockSchemaToken[]
+  callback: (block: BlockSchemaProxy, operators: OperationHelper) => void
   constructor(callback: (block: BlockSchemaProxy, operators: OperationHelper) => void) {
     super()
 
+    this.callback = callback
+  }
+
+  evaluate() {
     this.tokens = []
 
     const { proxy, revoke } = Proxy.revocable<BlockSchemaProxy>({}, this.makeProxyHandler(this.tokens))
     const operationHelper = new OperationHelper(proxy)
 
-    callback(proxy, operationHelper)
+    this.callback(proxy, operationHelper)
 
     revoke()
   }
 
+
   export(): BlockSchema[] {
+    if (!this.tokens)
+      throw new Error("평가되지 않은 블럭을 export할 수 없습니다")
     return this.tokens.map(x => x.export())
   }
 }
@@ -263,24 +289,33 @@ interface FuncPlaceholderProxy {
   param: Record<string, BlockSchemaToken>
 }
 
+export type FunctionGeneratorCallback = (block: BlockSchemaProxy, operators: OperationHelper, func: FuncPlaceholderProxy) => BlockSchemaToken | void
+
 export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
-  tokens: BlockSchemaToken[]
+  tokens?: BlockSchemaToken[]
   resultToken?: BlockSchemaToken
 
-  variables?: readonly string[]
-  parameters?: readonly string[]
+  variables?: string[]
+  parameters?: string[]
 
-  constructor(
-    callback: (block: BlockSchemaProxy, operators: OperationHelper, func: FuncPlaceholderProxy)
-      => BlockSchemaToken | void,
-    variables?: string[],
-    parameters?: string[]
-  ) {
+  name: string
+  nameTemplate: string
+
+  callback: FunctionGeneratorCallback
+
+  constructor(callback: FunctionGeneratorCallback, name: string, nameTemplate: string, variables?: string[], parameters?: string[]) {
     super()
+
+    this.name = name
+    this.nameTemplate = nameTemplate
 
     this.variables = variables ?? []
     this.parameters = parameters ?? []
 
+    this.callback = callback
+  }
+
+  evaluate() {
     this.tokens = []
 
     const { proxy: blockProxy, revoke: blockProxyRevoke } = Proxy.revocable<BlockSchemaProxy>({}, this.makeProxyHandler(this.tokens))
@@ -291,8 +326,8 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
         if (typeof prop === 'symbol')
           throw new TypeError("string만 인자로 받을 수 있습니다")
 
-        if (variables?.includes(prop)) {
-          return new BlockSchemaToken("get_func_variable", [prop]) 
+        if (this.variables?.includes(prop)) {
+          return blockProxy.get_func_variable(prop)
         }
 
         throw new Error(`변수 ${prop}이 존재하지 않습니다`)
@@ -313,8 +348,8 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
         if (typeof prop === 'symbol')
           throw new TypeError("string만 인자로 받을 수 있습니다")
 
-        if (parameters?.includes(prop)) {
-          return new BlockSchemaToken("stringParam", [prop]) 
+        if (this.parameters?.includes(prop)) {
+          return new BlockSchemaToken("stringParam", [prop])
         }
 
         throw new Error(`파라미터 ${prop}이 존재하지 않습니다`)
@@ -330,7 +365,7 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
       param: paramProxy
     }
 
-    const val = callback(blockProxy, operationHelper, funcProxy)
+    const val = this.callback(blockProxy, operationHelper, funcProxy)
 
     if (val) {
       this.resultToken = val
@@ -344,9 +379,71 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
     paramRevoke()
   }
 
-  export(): EntryFunctionSchema[] {
-    throw new Error("구현되지 않음")
-    // TODO: WIP
-    //return this.tokens.map(x => x.export())
+  export(): EntryFunctionSchema {
+    if (!this.tokens)
+      throw new Error("평가되지 않은 블럭을 export할 수 없습니다")
+
+    const variableMap: Record<string, string> = {}
+
+    if (this.variables)
+      for (let v of this.variables) {
+        variableMap[v] = generateHash()
+      }
+
+    const paramMap: Record<string, string> = {}
+
+    if (this.parameters)
+      for (let p of this.parameters) {
+        paramMap[p] = generateHash()
+      }
+
+    const recursiveReplace = (block: BlockSchemaToken) => {
+      switch (block.type) {
+        case 'stringParam': {
+          const paramId = paramMap[block.type]
+
+          if (!paramId)
+            throw new ReferenceError(`파라미터 ${block.type}는 존재하지 않습니다`)
+
+          block.type = `stringParam_${paramId}`
+          break
+        }
+        case 'get_func_variable':
+        case 'set_func_variable': {
+          const variableName = block.params[0]
+          if (variableName)
+            throw new ReferenceError(`변수명이 존재하지 않습니다`)
+
+          const variableId = variableMap[variableName]
+
+          if (!variableId)
+            throw new ReferenceError(`변수 ${variableName}는 존재하지 않습니다`)
+
+          block.params[0] = variableId
+        }
+      }
+
+      block.params.forEach((param) => {
+        if (param instanceof BlockSchemaToken)
+          recursiveReplace(param)
+      })
+
+      block.statements.forEach(statement => statement.forEach(recursiveReplace))
+    }
+
+    this.tokens.forEach(recursiveReplace)
+
+    if (this.resultToken)
+      recursiveReplace(this.resultToken)
+
+    return {
+      id: generateHash(),
+      name: this.name,
+      nameTemplate: this.nameTemplate,
+      variables: this.variables?.map(x => ({name: x, id: variableMap[x]})),
+      params: this.parameters?.map(x => ({name: x, id: paramMap[x]})),
+      content: this.tokens.map(x => x.export()),
+      result: this.resultToken?.export()
+    }
   }
 }

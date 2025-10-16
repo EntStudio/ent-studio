@@ -1,5 +1,5 @@
 import { BlockSchema } from "types/main/entryjs/schema";
-import { BlockExtension } from "../blockExtension";
+import { BlockExtension, BlockExtensionManager } from "../blockExtension";
 import { FunctionSchemaGenerator } from "../blockExtension";
 import { defaultBlockData } from "./default_calc";
 
@@ -18,7 +18,8 @@ const additionalOptions = [
   ['부호', 'sign'],
 ] as const satisfies [string, string][]
 
-const operationEntryFuctions: {[key in typeof additionalOptions[number][1]]: FunctionSchemaGenerator} = {
+type operationFunctionsKey = typeof additionalOptions[number][1]
+const operationEntryFunctions: {[key in operationFunctionsKey]: FunctionSchemaGenerator} = {
   exp: defaultBlockData.exp,
   sinh: defaultBlockData.sinh,
   cosh: defaultBlockData.cosh,
@@ -32,16 +33,24 @@ const operationEntryFuctions: {[key in typeof additionalOptions[number][1]]: Fun
 exportBlocks.blockChange.calc_operation = (block) => {
   const operatorOptions = block.params[3].options as [string, string][]
 
-  operatorOptions.splice(-1, 0, ...additionalOptions)
+  block.params[3].options = operatorOptions.concat(additionalOptions)
 
   return {
+    conversionAlias: additionalOptions.map(x => x[1]),
+    onLoad: (schema, thread) => {
+      return new Entry.Block(schema, thread)
+    },
     onExport: (block) => {
       const json = (block as any)._toJSON()
       const operationType: string = json.params[3]
 
       const operatorKeys: string[] = additionalOptions.map(x => x[1])
 
-      if (operatorKeys.includes(operationType))
+      if (operatorKeys.includes(operationType)) {
+        const schema = operationEntryFunctions[operationType as operationFunctionsKey].export()
+        BlockExtensionManager.instance.makePlaceholderFunction(schema)
+      }
+        
 
       return json
     }
