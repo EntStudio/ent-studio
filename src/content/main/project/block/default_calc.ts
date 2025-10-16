@@ -8,10 +8,10 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
     fn.variable['n'] = op.div(fn.param['x'], op.round(bl.number(2.302585092994045684)))
     fn.variable['r'] = op.sub(fn.param['x'], op.mul(fn.variable['n'], bl.number(2.302585092994045684)))
     fn.variable['result'] = op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.add(bl.number(1), op.div(fn.variable['r'], bl.number(1)))))))))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
     fn.variable['result'] = bl.replace_string(null, bl.combine_string(null, bl.text('1e+'), null, fn.variable['n'], null), null, bl.text('+-'), null, bl.text('-'))
 
     return fn.variable['result']
@@ -25,10 +25,10 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
     fn.variable['n'] = op.div(fn.param['x'], op.round(bl.number(2.302585092994045684)))
     fn.variable['r'] = op.sub(fn.param['x'], op.mul(fn.variable['n'], bl.number(2.302585092994045684)))
     fn.variable['result'] = op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.add(bl.number(1), op.div(fn.variable['r'], bl.number(1)))))))))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
     fn.variable['result'] = bl.replace_string(null, bl.combine_string(null, bl.text('1e+'), null, fn.variable['n'], null), null, bl.text('+-'), null, bl.text('-'))
     fn.variable['result'] = op.div(op.sub(fn.variable['result'], op.div(bl.number(1), fn.variable['result'])), bl.number(2))
 
@@ -43,10 +43,10 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
     fn.variable['n'] = op.div(fn.param['x'], op.round(bl.number(2.302585092994045684)))
     fn.variable['r'] = op.sub(fn.param['x'], op.mul(fn.variable['n'], bl.number(2.302585092994045684)))
     fn.variable['result'] = op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.add(bl.number(1), op.div(fn.variable['r'], bl.number(1)))))))))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
     fn.variable['result'] = bl.replace_string(null, bl.combine_string(null, bl.text('1e+'), null, fn.variable['n'], null), null, bl.text('+-'), null, bl.text('-'))
     fn.variable['result'] = op.div(op.add(fn.variable['result'], op.div(bl.number(1), fn.variable['result'])), bl.number(2))
 
@@ -61,10 +61,10 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
     fn.variable['n'] = op.div(fn.param['x'], op.round(bl.number(2.302585092994045684)))
     fn.variable['r'] = op.sub(fn.param['x'], op.mul(fn.variable['n'], bl.number(2.302585092994045684)))
     fn.variable['result'] = op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.square(op.add(bl.number(1), op.div(fn.variable['r'], bl.number(1)))))))))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
-    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['return']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
+    fn.variable['result'] = op.mul(fn.variable['result'], op.add(bl.number(1), op.sub(fn.variable['r'], op.ln(fn.variable['result']))))
     fn.variable['result'] = bl.replace_string(null, bl.combine_string(null, bl.text('1e+'), null, fn.variable['n'], null), null, bl.text('+-'), null, bl.text('-'))
     fn.variable['result'] = op.div(op.sub(fn.variable['result'], op.div(bl.number(1), fn.variable['result'])), op.add(fn.variable['result'], op.div(bl.number(1), fn.variable['result'])))
 
@@ -76,7 +76,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   ['x']),
 
   arsinh: new FunctionSchemaGenerator((bl, op, fn) => {
-    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.sqrt(op.add(op.square(fn.param['x']), bl.number(1)))))
+    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.root(op.add(op.square(fn.param['x']), bl.number(1)))))
 
     return fn.variable['result']
   },
@@ -86,7 +86,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   ['x']),
 
   arcosh: new FunctionSchemaGenerator((bl, op, fn) => {
-    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.sqrt(op.sub(op.square(fn.param['x']), bl.number(1)))))
+    fn.variable['result'] = op.ln(op.add(fn.param['x'], op.root(op.sub(op.square(fn.param['x']), bl.number(1)))))
 
     return fn.variable['result']
   },
@@ -96,7 +96,7 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   ['x']),
   
   artanh: new FunctionSchemaGenerator((bl, op, fn) => {
-    fn.variable['result'] = op.ln(op.div(op.sqrt(op.sub(bl.number(1), op.square(fn.param['x']))), op.sub(bl.number(1), fn.param['x'])))
+    fn.variable['result'] = op.ln(op.div(op.root(op.sub(bl.number(1), op.square(fn.param['x']))), op.sub(bl.number(1), fn.param['x'])))
 
     return fn.variable['result']
   },

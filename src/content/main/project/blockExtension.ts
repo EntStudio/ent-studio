@@ -1,6 +1,12 @@
 import { generateHash } from "@/utils/utils"
-import { EntryBlock } from "types/main/entryjs"
-import { BlockDeletable, BlockSchema, LooseBlockSchema } from "types/main/entryjs/schema"
+import type { EntryBlock } from "@/types/main/entryjs"
+import type { BlockSchema, LooseBlockSchema } from "@/types/main/entryjs/schema"
+
+const BlockDeletable = {
+  TRUE: 1,
+  FALSE: 2,
+  FALSE_LIGHTEN: 3
+}
 
 export interface ExtendedEntryBlock extends EntryBlock {
   conversionAlias: string[]
@@ -155,8 +161,8 @@ class OperationHelper {
     return this.proxy.calc_operation(null, x, null, "round")
   }
 
-  sqrt(x: BlockSchemaToken) {
-    return this.proxy.calc_operation(null, x, null, "sqrt")
+  root(x: BlockSchemaToken) {
+    return this.proxy.calc_operation(null, x, null, "root")
   }
 
   square(x: BlockSchemaToken) {
@@ -339,7 +345,7 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
 
         blockProxy.set_func_variable(prop, receiver, null)
 
-        return false
+        return true
       }
     })
 

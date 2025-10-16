@@ -1,4 +1,3 @@
-import { BlockSchema } from "types/main/entryjs/schema";
 import { BlockExtension, BlockExtensionManager } from "../blockExtension";
 import { FunctionSchemaGenerator } from "../blockExtension";
 import { defaultBlockData } from "./default_calc";
@@ -19,7 +18,7 @@ const additionalOptions = [
 ] as const satisfies [string, string][]
 
 type operationFunctionsKey = typeof additionalOptions[number][1]
-const operationEntryFunctions: {[key in operationFunctionsKey]: FunctionSchemaGenerator} = {
+export const operationEntryFunctions: {[key in operationFunctionsKey]: FunctionSchemaGenerator} = {
   exp: defaultBlockData.exp,
   sinh: defaultBlockData.sinh,
   cosh: defaultBlockData.cosh,

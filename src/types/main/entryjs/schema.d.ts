@@ -21,9 +21,4 @@ export interface LooseBlockSchema extends Partial<BlockSchema> {
 
 // TODO: 나중에 Entry.Block.Deletable로 이동
 // 별로 이러고 싶진 않았는데
-export const BlockDeletable = {
-  TRUE: 1,
-  FALSE: 2,
-  FALSE_LIGHTEN: 3
-} as const
-
+// 아니 그러면 하질 말았어야지

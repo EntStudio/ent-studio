@@ -1,5 +1,6 @@
 import { sleep } from "@/utils/utils"
 import { BlockExtensionManager } from "./project/blockExtension"
+import { operationEntryFunctions } from "@/content/main/project/block/block_calc"
 
 BlockExtensionManager.init()
 
@@ -48,7 +49,7 @@ else {
 }
 
 function onEntryLoad() {
-  // TODO: 여기에 이벤트 추가
+  console.log(operationEntryFunctions.exp.export())
 }
 
 
