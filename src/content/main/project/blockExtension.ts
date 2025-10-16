@@ -310,7 +310,7 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
 
         blockProxy.set_func_variable(prop, receiver, null)
 
-        return false
+        return true
       }
     })
 
@@ -350,11 +350,11 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
     paramRevoke()
   }
 
-  export(): EntryFunctionSchema[] {
-    return [{
+  export(): EntryFunctionSchema {
+    return {
       variables: this.variables ? [...this.variables] : undefined,
       content: this.tokens.map(token => token.export()),
       result: this.resultToken ? this.resultToken.export() : undefined,
-    }]
+    }
   }
 }
