@@ -1,4 +1,7 @@
 import { sleep } from "@/utils/utils"
+import { BlockExtensionManager } from "./project/blockExtension"
+
+BlockExtensionManager.init()
 
 async function findEntryJS(attempts: number = 3, timeout: number = 3) {
   for (let i = attempts; i > 0; i--) {
