@@ -406,18 +406,18 @@ export class FunctionSchemaGenerator extends BlockSchemaGeneratorBase {
     const recursiveReplace = (block: BlockSchemaToken) => {
       switch (block.type) {
         case 'stringParam': {
-          const paramId = paramMap[block.type]
+          const paramId = paramMap[block.params[0]]
 
           if (!paramId)
-            throw new ReferenceError(`파라미터 ${block.type}는 존재하지 않습니다`)
+            throw new ReferenceError(`파라미터 ${block.params[0]}는 존재하지 않습니다`)
 
-          block.type = `stringParam_${paramId}`
+          block.params[0] = `stringParam_${paramId}`
           break
         }
         case 'get_func_variable':
         case 'set_func_variable': {
           const variableName = block.params[0]
-          if (variableName)
+          if (!variableName)
             throw new ReferenceError(`변수명이 존재하지 않습니다`)
 
           const variableId = variableMap[variableName]

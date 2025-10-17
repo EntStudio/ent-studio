@@ -49,6 +49,7 @@ else {
 }
 
 function onEntryLoad() {
+  operationEntryFunctions.exp.evaluate()
   console.log(operationEntryFunctions.exp.export())
 }
 
