@@ -75,33 +75,33 @@ export const defaultBlockData: Record<string, FunctionSchemaGenerator> = {
   ['n', 'r', 'result'],
   ['x']),
 
-  arsinh: new FunctionSchemaGenerator((bl, op, fn) => {
+  asinh: new FunctionSchemaGenerator((bl, op, fn) => {
     fn.variable['result'] = op.ln(op.add(fn.param['x'], op.root(op.add(op.square(fn.param['x']), bl.number(1)))))
 
     return fn.variable['result']
   },
-  "arsinh",
-  "arsinh %1",
+  "asinh",
+  "asinh %1",
   ['result'],
   ['x']),
 
-  arcosh: new FunctionSchemaGenerator((bl, op, fn) => {
+  acosh: new FunctionSchemaGenerator((bl, op, fn) => {
     fn.variable['result'] = op.ln(op.add(fn.param['x'], op.root(op.sub(op.square(fn.param['x']), bl.number(1)))))
 
     return fn.variable['result']
   },
-  "arcosh",
-  "arcosh %1",
+  "acosh",
+  "acosh %1",
   ['result'],
   ['x']),
   
-  artanh: new FunctionSchemaGenerator((bl, op, fn) => {
+  atanh: new FunctionSchemaGenerator((bl, op, fn) => {
     fn.variable['result'] = op.ln(op.div(op.root(op.sub(bl.number(1), op.square(fn.param['x']))), op.sub(bl.number(1), fn.param['x'])))
 
     return fn.variable['result']
   },
-  "artanh",
-  "artanh %1",
+  "atanh",
+  "atanh %1",
   ['result'],
   ['x']),
 
